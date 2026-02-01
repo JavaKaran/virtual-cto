@@ -49,3 +49,21 @@ class AuthenticationException(BaseAPIException):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=detail,
         )
+
+
+class ProjectNotFoundException(BaseAPIException):
+    """Raised when a project is not found"""
+    def __init__(self):
+        super().__init__(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Project not found"
+        )
+
+
+class ProjectAccessDeniedException(BaseAPIException):
+    """Raised when user tries to access a project they don't own"""
+    def __init__(self):
+        super().__init__(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You don't have permission to access this project"
+        )

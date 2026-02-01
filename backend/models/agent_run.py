@@ -1,20 +1,21 @@
 import uuid
 from database import Base
-from sqlalchemy import Column, String, Boolean, DateTime
+from sqlalchemy import Column, String, Text, DateTime, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 
 
-class User(Base):
-    __tablename__ = "users"
+class AgentRun(Base):
+    __tablename__ = "agent_runs"
     
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
-    username = Column(String, unique=True, index=True)
-    password = Column(String, nullable=False)
-    is_active = Column(Boolean, default=True)
+    project_id = Column(UUID(as_uuid=True), ForeignKey("projects.id"), nullable=False, index=True)
+    input = Column(Text, nullable=True)
+    output = Column(Text, nullable=True)
+    version = Column(String(50), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
     # Relationships
-    projects = relationship("Project", back_populates="user", cascade="all, delete-orphan")
+    project = relationship("Project", back_populates="agent_runs")
